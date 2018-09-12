@@ -37,7 +37,7 @@ class MySQLClientConan(ConanFile):
     def build(self):
         if self.settings.compiler == "Visual Studio" and self.settings.compiler.version != 12:
             self.settings.compiler.version = 12
-        cmake = CMake(self.settings)
+        cmake = CMake(self)
         self.run('cd mysqlclient && mkdir build && cd build && cmake .. %s' % cmake.command_line)
         self.run("cd mysqlclient/build && cmake --build . %s" % cmake.build_config)
 
