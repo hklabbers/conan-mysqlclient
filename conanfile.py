@@ -1,5 +1,5 @@
 from conans import ConanFile, CMake
-from conans.tools import download, unzip
+from conans.tools import download, unzip, replace_in_file
 
 import os, shutil
 
@@ -38,8 +38,9 @@ class MySQLClientConan(ConanFile):
         if self.settings.compiler == "Visual Studio" and self.settings.compiler.version != 12:
             self.settings.compiler.version = 12
         cmake = CMake(self)
-        self.run('cd mysqlclient && mkdir build && cd build && cmake .. %s' % cmake.command_line)
-        self.run("cd mysqlclient/build && cmake --build . %s" % cmake.build_config)
+        cmake.definitions["MYSQL_MAINTAINER_MODE"]=0
+        cmake.configure(source_folder="mysqlclient", build_folder="mysqlclient/build")
+        cmake.build()
 
     def package(self):
         # Copy findMySQL.cmake to package
